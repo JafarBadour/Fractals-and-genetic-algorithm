@@ -5,7 +5,7 @@
 #include <iostream>
 #define  POPULATION_SIZE 10
 #define GOLDEN_RATIO (0.2 +1.61803398875)
-int MAX_GENERATIONS = 10;
+int MAX_GENERATIONS = 5;
 #include <random>
 #include <zconf.h>
 
@@ -179,10 +179,17 @@ void breed(Mat& result, vector<Mat>& population, int genNumber){
             pq.push(make_pair(getFitness(child, &result), child));
         }
     }
-
-
     for(int i=0;i<POPULATION_SIZE;i++){
         newPopulation.push_back(*pq.top().second);
+        delete pq.top().second;
+        pq.pop();
+    }
+    while(!pq.empty()){
+        delete pq.top().second;
+        pq.pop();
+    }
+    for(auto u : population){
+        u.release();
     }
     population = newPopulation;
 
@@ -232,7 +239,7 @@ int main( int argc, const char** argv ) {
     cout<<fixed;
     cout.precision(10);
     imwrite("../Output.jpg", result);
-    freopen("FitnessFunction.txt","w",stdout);
+    freopen("../FitnessFunction.txt","w",stdout);
     for(auto u : vfitness){
         cout<<u<<' ';
     }
