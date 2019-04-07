@@ -5,7 +5,7 @@
 #include <iostream>
 #define  POPULATION_SIZE 10
 #define GOLDEN_RATIO (0.2 +1.61803398875)
-
+int MAX_GENERATIONS = 10;
 #include <random>
 #include <zconf.h>
 
@@ -127,7 +127,12 @@ Mat* crossOver(Mat& p1, Mat& p2) {
     return child;
 }
 void mutate(Mat* child, Mat* optimal){
-
+    /*
+     * this function is given an unborn child we will
+     * mutate a random circle of its chromosome space
+     * Using normal distribution (Please refer to my
+     * documentation to understand how it works thoroughly
+     */
     std::default_random_engine gen;
     std::normal_distribution<double> distribution(33.0,160.0);
     Circle randomCircle;
@@ -199,28 +204,21 @@ void breed(Mat& result, vector<Mat>& population, int genNumber){
 vector<double> vfitness;
 void geneticStart(Mat& result){
     vector<Mat> population(POPULATION_SIZE ,Mat(512,512, CV_8UC3, Scalar(0,0,0)));
-    for(int i=1;i<100;i++) {
+    for(int i=1;i<MAX_GENERATIONS;i++) {
 
         breed(result, population, i);
         double fitness = getFitness(&population[0], &result);
         vfitness.push_back(fitness);
         cout<<"Fitness of first individual is " << fitness<<endl;
     }
+    result = population[0];
 }
 
 int main( int argc, const char** argv ) {
 
-   /* std::default_random_engine generator;
-    std::normal_distribution<double> distribution(101 ,10.0);
 
-    for(int i=1;i<=100;i++)
-        cout<<distribution(generator)<<endl;
-return 0;*/
-
-    cout<<fixed;
-    cout.precision(10);
-    Mat image = imread("../abdul.png");
-
+    Mat image = imread(argv[1]);
+    MAX_GENERATIONS = atoi(argv[2]);
     Mat original = image.clone();
     Circle fractalFace;
     fractalFace = *getFace(image);
@@ -236,9 +234,10 @@ return 0;*/
     Mat result(512,512, CV_8UC3, Scalar(0,0,0));
     dfs(512/2,512/2, -1, result, root);
     geneticStart(result);
-   /* imshow("Face",result);
+    cout<<fixed;
+    cout.precision(10);
     imwrite("../Output.jpg", result);
-    waitKey(0);*/
+
    return 0;
 }
 
