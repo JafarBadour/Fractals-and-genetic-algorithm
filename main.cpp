@@ -73,10 +73,7 @@ void dfs(int x,int y, int depth, Mat& result, Mat& currentMatrix){
         return;
     Mat shrunk;
     cv::resize(currentMatrix, shrunk, cv::Size(),1.0/GOLDEN_RATIO, 1.0/GOLDEN_RATIO);
-    /*imshow("shrunk", shrunk);
-    //cout<<shrunk.rows<<' '<<shrunk.cols<<endl<<currentMatrix.rows<<' '<<currentMatrix.cols<<endl;
 
-    waitKey(0);*/
     int dx[] = {0,1,-1,0};
     int dy[] = {-1,0,0,1};
 
@@ -91,9 +88,6 @@ void dfs(int x,int y, int depth, Mat& result, Mat& currentMatrix){
             result.at<Vec3b>(Point(i,j)) = naskh;
         }
     }
-   /* namedWindow("result", WINDOW_GUI_EXPANDED);
-    imshow("result",result);
-    waitKey(0);*/
     for(int t=0;t<4;t++){
         int nx = x + dx[t] * (currentMatrix.rows + shrunk.rows)/2.0;
         int ny = y + dy[t] * (currentMatrix.cols + shrunk.cols)/2.0;
