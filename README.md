@@ -49,6 +49,54 @@ such that the circles wont collide amongst themselves.
 4. go_through_new_states_that_stem_from_this_state
 ```
 
+### Genetic Algorithm Outline
+
+#### Genes
+
+* Genes in my algorithm are basically ```RGB``` picture variations such a way that the fittest is the closest for the optimal picture 
+that have been made in the previous steps (We will talk about the fitness of these variations in latter sections)
+so here for each individual we have ```512*512*3``` numbers which will identify this specific individual.
+* Each sequential triplet will represent a pixel of the picture.
+* At first all genes are black (No color) and afterwards they are filled with random data (via mutations and chromatic exchange)
+#### Fitness Function
+* In our world we will ignore multiple species emerging from our sample and we will always try to emit out these species (I use species here just to illustrate as if it was real world). so
+here we will focus on the species that will look basically the closest to the optimal individual which we have created in the previous steps.
+* Fitness is measured by the relative difference to the optimal and then it is calculated as the average
+relative difference for all pixels having it varies in ``` [0, 1)```.
+* The closest to 1 is the better.
+* Function returns this value as a double.
+
+#### Cross Over
+
+* Having it as set of two function breed and crossOver.
+* In crossover having two parents and the newborn child will have randomly selected chromosomes from either first or second parent (Just like what happens in human crossover).
+* Here I am having population of size 10 and having all parents emitted after crossovers and it is fair enough to say
+that these parents are digital spartians that will kill 35 children that are less fit for this digital world
+* Next generation basically does the same thing.
+
+#### Mutations 
+* Since our optimal individual is the best one fit for this digital world it is obvious to conclude that generation after generation individuals are coming closer and closer
+thus here using normal distribution I have chosen random values of mutation area and mutation pixel values relying on the ```std::normal distribution```.
+
+
+# HERE
+
+
+* Taking a random circle with a reasonable size (via setting parameters to normal distribution) 
+now this area will randomly mutate.
+* I have sat normal distribution  parameters to favor these events that will happen so that it will serve faster 
+transformation but the algorithm is working with any parameters just with different speeds.
+
+
+#### Conclusion 
+* After face recognition and fractal creation
+* Initially having all black individuals 
+* Crossover each pair
+* Mutate some of the children
+* Replace the population with the new population
+* Omit out those who are further from the optimal image
+
+
 
 
 
