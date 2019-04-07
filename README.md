@@ -100,11 +100,10 @@ transformation but the algorithm is working with any parameters just with differ
 
 #Screenshots during algorithm work
 
-* ![](Media/2.png)
+* ![](Media/4.png)
 
 * ![](Media/3.png)
 
-* ![](Media/4.png)
 * Beware it takes a lot of time 
 
 
