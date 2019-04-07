@@ -3,8 +3,12 @@
 #include "opencv2/highgui.hpp"
 #include "opencv2/imgproc.hpp"
 #include <iostream>
-
+#define  POPULATION_SIZE 10
 #define GOLDEN_RATIO (0.2 +1.61803398875)
+
+#include <random>
+#include <zconf.h>
+
 using namespace std;
 using namespace cv;
 
@@ -87,9 +91,9 @@ void dfs(int x,int y, int depth, Mat& result, Mat& currentMatrix){
             result.at<Vec3b>(Point(i,j)) = naskh;
         }
     }
-    namedWindow("result", WINDOW_GUI_EXPANDED);
+   /* namedWindow("result", WINDOW_GUI_EXPANDED);
     imshow("result",result);
-    waitKey(0);
+    waitKey(0);*/
     for(int t=0;t<4;t++){
         int nx = x + dx[t] * (currentMatrix.rows + shrunk.rows)/2.0;
         int ny = y + dy[t] * (currentMatrix.cols + shrunk.cols)/2.0;
@@ -97,6 +101,11 @@ void dfs(int x,int y, int depth, Mat& result, Mat& currentMatrix){
     }
 }
 
+bool insideCircle(Circle& tester, Point p){
+    if(hypot(p.x - tester.x,p.y-tester.y)<= tester.r)
+        return 1;
+    return 0;
+}
 
 Mat* crossOver(Mat& p1, Mat& p2) {
     Mat* child = new Mat(512, 512, CV_8UC3, Scalar(0, 0, 0));
@@ -104,49 +113,105 @@ Mat* crossOver(Mat& p1, Mat& p2) {
         for (int j = 0; j < 512; j++) {
             for (int k = 0; k < 3; k++) {
                 child->at<Vec3b>(i, j)[k] = (p1.at<Vec3b>(i, j)[k] + p2.at<Vec3b>(i, j)[k]) / 2;
-
             }
         }
     }
     return child;
 }
-void mutate(Mat& child){
+void mutate(Mat* child, Mat* optimal){
 
-}
-
-bool cmp(Mat& a,Mat& b){
-    return 1;
-}
-
-void breed(Mat& result, vector<Mat>& population){
-    vector<Mat> newPopulation;
-
-    for(int i=0;i<55;i++){
-        for(int j=i+1;j<55;j++){
-            Mat child = *crossOver(population[i], population[j]);
-            if(rand()%4==0)
-                mutate(child);
-            newPopulation.push_back(child);
+    std::default_random_engine gen;
+    std::normal_distribution<double> distribution(120.0,160.0);
+    Circle randomCircle;
+    randomCircle.x = rand()%512;
+    randomCircle.y = rand()%512;
+    randomCircle.r = (int)distribution(gen);
+    randomCircle.r = max(randomCircle.r,5);
+    randomCircle.r = min(randomCircle.r,256);
+    for(int i=0;i<512;i++){
+        for(int j=0;j<512;j++){
+            if(!insideCircle(randomCircle, Point(i,j)))continue;
+            for(int k=0;k<3;k++) {
+                int optimalValue = optimal->at<Vec3b>(i, j)[k];
+                std::default_random_engine generator;
+                std::normal_distribution<double> distribution(optimalValue*1.0,100.0);
+                int value = (int)distribution(generator);
+                if(rand()%5 == 0)
+                    value = rand()%255;
+               /* cout<<value<<' '<<optimalValue<<endl;
+                waitKey(0);*/
+                //value = rand()%255;
+                value = min(value, 255);
+                value = max(value, 0);
+                child->at<Vec3b>(i, j)[k] = value;
+            }
         }
     }
-    sort(newPopulation.begin(),newPopulation.end(), cmp);
-    /// Certain parts of the new population will mutate 10% to make the algorithm work faster however it could be set to any value
+}
 
-
-    for(int mutateCounter = 0;mutateCounter<20;mutateCounter++){
-        int i = rand() % 200;
-
+double getFitness(Mat* child, Mat* optimal){
+    double res = 0,big = 0;
+    for(int i=0;i<512;i++){
+        for(int j=0;j<512;j++){
+            for(int k=0;k<3;k++){
+                res += (1.0*abs((int)child->at<Vec3b>(i,j)[k] - (int)optimal->at<Vec3b>(i,j)[k]))/255.0;
+            }
+        }
     }
+
+    return 1.0-res/(512*512*3.0);
+}
+
+
+void breed(Mat& result, vector<Mat>& population, int genNumber){
+    vector<Mat> newPopulation;
+    priority_queue<pair<int,Mat*>> pq;
+    for(int i=0;i<POPULATION_SIZE;i++){
+        for(int j=i+1;j<POPULATION_SIZE;j++){
+            Mat* child = crossOver(population[i], population[j]);
+           // if(rand()%4==0)     /// Certain parts of the new population will mutate 10% to make the algorithm work faster however it could be set to any value
+            mutate(child, &result);
+            pq.push(make_pair(getFitness(child, &result), child));
+        }
+    }
+
+
+    for(int i=0;i<POPULATION_SIZE;i++){
+        newPopulation.push_back(*pq.top().second);
+    }
+    population = newPopulation;
+
+    stringstream ss;
+    ss<<"Generation_number_#";
+
+    string generation;
+    ss>>generation;
+    cout<<"Generation number #"<<genNumber<<endl;
+     namedWindow(generation, WINDOW_GUI_EXPANDED);
+    imshow(generation, population[0]);
+    waitKeyEx(200);
 }
 
 void geneticStart(Mat& result){
-    vector<Mat> population(55 ,Mat(512,512, CV_8UC3, Scalar(0,0,0)));
+    vector<Mat> population(POPULATION_SIZE ,Mat(512,512, CV_8UC3, Scalar(0,0,0)));
+    for(int i=1;i<100;i++) {
 
+        breed(result, population, i);
+        cout<<"Fitness of first individual is " << getFitness(&population[0], &result)<<endl;
+    }
 }
 
 int main( int argc, const char** argv ) {
 
+   /* std::default_random_engine generator;
+    std::normal_distribution<double> distribution(101 ,10.0);
 
+    for(int i=1;i<=100;i++)
+        cout<<distribution(generator)<<endl;
+return 0;*/
+
+    cout<<fixed;
+    cout.precision(10);
     Mat image = imread("../abdul.png");
 
     Mat original = image.clone();
@@ -164,9 +229,10 @@ int main( int argc, const char** argv ) {
     Mat result(512,512, CV_8UC3, Scalar(0,0,0));
     dfs(512/2,512/2, -1, result, root);
     geneticStart(result);
-    imshow("Face",result);
+   /* imshow("Face",result);
     imwrite("../Output.jpg", result);
-    waitKey(0);
+    waitKey(0);*/
+   return 0;
 }
 
 
