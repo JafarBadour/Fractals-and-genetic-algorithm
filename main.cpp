@@ -142,6 +142,7 @@ void mutate(Mat* child, Mat* optimal){
     randomCircle.r = max(randomCircle.r,5);
     randomCircle.r = min(randomCircle.r,256);
     for(int i=0;i<512;i++){
+        if(abs(i - randomCircle.x)>randomCircle.r)continue;
         for(int j=0;j<512;j++){
             if(!insideCircle(randomCircle, Point(i,j)))continue;
             for(int k=0;k<3;k++) {
