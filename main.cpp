@@ -112,7 +112,15 @@ Mat* crossOver(Mat& p1, Mat& p2) {
     for (int i = 0; i < 512; i++) {
         for (int j = 0; j < 512; j++) {
             for (int k = 0; k < 3; k++) {
-                child->at<Vec3b>(i, j)[k] = (p1.at<Vec3b>(i, j)[k] + p2.at<Vec3b>(i, j)[k]) / 2;
+                /*
+                 * Here i will use human biology that the new individual will either copy chromosome from its first or
+                 * second parent also some mutations happen with certain chromosomes that they grow shorter or change but
+                 * this wont be in this code due to its complexity maybe in the future)
+                 *
+                 */
+
+                int p1orp2 = rand()%2;
+                child->at<Vec3b>(i, j)[k] = p1orp2 == 1? p1.at<Vec3b>(i, j)[k] : p2.at<Vec3b>(i, j)[k];
             }
         }
     }
@@ -121,7 +129,7 @@ Mat* crossOver(Mat& p1, Mat& p2) {
 void mutate(Mat* child, Mat* optimal){
 
     std::default_random_engine gen;
-    std::normal_distribution<double> distribution(120.0,160.0);
+    std::normal_distribution<double> distribution(33.0,160.0);
     Circle randomCircle;
     randomCircle.x = rand()%512;
     randomCircle.y = rand()%512;
@@ -138,9 +146,6 @@ void mutate(Mat* child, Mat* optimal){
                 int value = (int)distribution(generator);
                 if(rand()%5 == 0)
                     value = rand()%255;
-               /* cout<<value<<' '<<optimalValue<<endl;
-                waitKey(0);*/
-                //value = rand()%255;
                 value = min(value, 255);
                 value = max(value, 0);
                 child->at<Vec3b>(i, j)[k] = value;
@@ -169,8 +174,8 @@ void breed(Mat& result, vector<Mat>& population, int genNumber){
     for(int i=0;i<POPULATION_SIZE;i++){
         for(int j=i+1;j<POPULATION_SIZE;j++){
             Mat* child = crossOver(population[i], population[j]);
-           // if(rand()%4==0)     /// Certain parts of the new population will mutate 10% to make the algorithm work faster however it could be set to any value
-            mutate(child, &result);
+            if(rand()%2==0)     /// Certain parts of the new population will mutate 10% to make the algorithm work faster however it could be set to any value
+                 mutate(child, &result);
             pq.push(make_pair(getFitness(child, &result), child));
         }
     }
@@ -189,7 +194,7 @@ void breed(Mat& result, vector<Mat>& population, int genNumber){
     cout<<"Generation number #"<<genNumber<<endl;
      namedWindow(generation, WINDOW_GUI_EXPANDED);
     imshow(generation, population[0]);
-    waitKeyEx(200);
+    waitKeyEx(50);
 }
 
 void geneticStart(Mat& result){
