@@ -223,16 +223,19 @@ int main( int argc, const char** argv ) {
     // circle(original, Point(fractalFace.x,fractalFace.y),fractalFace.r-5, cv::Scalar(0,0,0),10);
     Mat root = original(Rect(fractalFace.x-fractalFace.r,fractalFace.y-fractalFace.r,2*fractalFace.r,2*fractalFace.r));
 
-    namedWindow("Face",WINDOW_NORMAL);
     cv::resize(root,root,cv::Size(),150.0/root.cols, 150.0/root.cols);
     Mat img2;
     Mat result(512,512, CV_8UC3, Scalar(0,0,0));
     dfs(512/2,512/2, -1, result, root);
+    imwrite("../Media/fractal.jpg",result);
     geneticStart(result);
     cout<<fixed;
     cout.precision(10);
     imwrite("../Output.jpg", result);
-
+    freopen("FitnessFunction.txt","w",stdout);
+    for(auto u : vfitness){
+        cout<<u<<' ';
+    }
    return 0;
 }
 

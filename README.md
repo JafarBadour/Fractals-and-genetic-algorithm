@@ -79,7 +79,8 @@ that these parents are digital spartians that will kill 35 children that are les
 thus here using normal distribution I have chosen random values of mutation area and mutation pixel values relying on the ```std::normal distribution```.
 
 
-![](image_2019-04-07_21-35-43.png) 
+* ![](Media/1.png)
+```In the above photo is representation of the normal distribution of probabilty of getting pixels betwen [0,255).``` 
 
 
 * Taking a random circle with a reasonable size (via setting parameters to normal distribution) 
@@ -97,6 +98,14 @@ transformation but the algorithm is working with any parameters just with differ
 * Omit out those who are further from the optimal image
 
 
+#Screenshots during algorithm work
+
+* ![](Media/2.png)
+
+* ![](Media/3.png)
+
+* ![](Media/4.png)
+* Beware it takes a lot of time 
 
 
 
