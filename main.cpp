@@ -114,7 +114,9 @@ void mutate(Mat& child){
 
 }
 
-bool cmp
+bool cmp(Mat& a,Mat& b){
+    return 1;
+}
 
 void breed(Mat& result, vector<Mat>& population){
     vector<Mat> newPopulation;
@@ -143,6 +145,8 @@ void geneticStart(Mat& result){
 }
 
 int main( int argc, const char** argv ) {
+
+
     Mat image = imread("../abdul.png");
 
     Mat original = image.clone();

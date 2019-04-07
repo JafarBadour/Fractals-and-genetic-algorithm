@@ -12,3 +12,4 @@ add_executable(Jafar main.cpp)
 target_link_libraries( Jafar ${OpenCV_LIBS} )
 
 include_directories(${OpenCV_INCLUDE_DIRS})
+
