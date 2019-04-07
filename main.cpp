@@ -155,7 +155,7 @@ void mutate(Mat* child, Mat* optimal){
 }
 
 double getFitness(Mat* child, Mat* optimal){
-    double res = 0,big = 0;
+    double res = 0;
     for(int i=0;i<512;i++){
         for(int j=0;j<512;j++){
             for(int k=0;k<3;k++){
@@ -196,13 +196,15 @@ void breed(Mat& result, vector<Mat>& population, int genNumber){
     imshow(generation, population[0]);
     waitKeyEx(50);
 }
-
+vector<double> vfitness;
 void geneticStart(Mat& result){
     vector<Mat> population(POPULATION_SIZE ,Mat(512,512, CV_8UC3, Scalar(0,0,0)));
     for(int i=1;i<100;i++) {
 
         breed(result, population, i);
-        cout<<"Fitness of first individual is " << getFitness(&population[0], &result)<<endl;
+        double fitness = getFitness(&population[0], &result);
+        vfitness.push_back(fitness);
+        cout<<"Fitness of first individual is " << fitness<<endl;
     }
 }
 
