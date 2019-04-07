@@ -79,7 +79,7 @@ that these parents are digital spartians that will kill 35 children that are les
 thus here using normal distribution I have chosen random values of mutation area and mutation pixel values relying on the ```std::normal distribution```.
 
 
-# HERE
+![](image_2019-04-07_21-35-43.png) 
 
 
 * Taking a random circle with a reasonable size (via setting parameters to normal distribution) 
