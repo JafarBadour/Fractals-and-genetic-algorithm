@@ -105,6 +105,25 @@ transformation but the algorithm is working with any parameters just with differ
 * ![](Media/3.png)
 
 * Beware it takes a lot of time 
+* After 10 minutes we have 
 
+* ![](Media/6.png)
 
+* Then
 
+* ![](Media/5.png)
+* After 30 minutes having 
+
+* ![](Output.jpg)
+
+While optimal is 
+
+* ![](Media/fractal.jpg)
+
+* Just give it time you will have artistic work (like picaso taking days to finish a painting)
+
+## Notes for future contributors 
+* Maybe we can breakdown calculations into many threads to fasten the calculation processes
+* Using data structures so that we dont calculate fitness function for each individual but 
+maybe rely on fitness of its parents and mutation change.
+* Feel free to contact me via email [jafer.ba@Gmail.com](jafer.ba@Gmail.com)
