@@ -39,6 +39,16 @@ and then the coordinates of faces centers are given back by an array.
 using the relation that each circle will have 4 tangent circles
 such that the circles wont collide amongst themselves. 
 
-* Given that ratio between new circle radius and old circle radius is \lambda conclude that the biggest ratio that we could possible have is $$\frac{1}{\Phi}$$ which is approximately   
+* Given that ratio between new circle radius and old circle radius is ```X``` conclude that the biggest ratio that we could possible have is ```1/GR``` (```GR``` refers to the ```golden ratio```) which I have used this approximation ```1.618033988```.
+* Now running depth first search so we can make our fractal of identical faces:
+
+```
+1. dfs(State(x,y),myParentFaceImage)
+2. resizeMyParentFaceImage to new size(oldsize/GoldenRatio)
+3. copyThisto the snippet that contains (x,y)
+4. go_through_new_states_that_stem_from_this_state
+```
+
+
 
 
