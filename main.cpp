@@ -120,39 +120,6 @@ Mat* crossOver(Mat& p1, Mat& p2) {
     }
     return child;
 }
-void mutate(Mat* child, Mat* optimal){
-    /*
-     * this function is given an unborn child we will
-     * mutate a random circle of its chromosome space
-     * Using normal distribution (Please refer to my
-     * documentation to understand how it works thoroughly
-     */
-    std::default_random_engine gen;
-    std::normal_distribution<double> distribution(33.0,160.0);
-    Circle randomCircle;
-    randomCircle.x = rand()%512;
-    randomCircle.y = rand()%512;
-    randomCircle.r = (int)distribution(gen);
-    randomCircle.r = max(randomCircle.r,5);
-    randomCircle.r = min(randomCircle.r,256);
-    for(int i=0;i<512;i++){
-        if(abs(i - randomCircle.x)>randomCircle.r)continue;
-        for(int j=0;j<512;j++){
-            if(!insideCircle(randomCircle, Point(i,j)))continue;
-            for(int k=0;k<3;k++) {
-                int optimalValue = optimal->at<Vec3b>(i, j)[k];
-                std::default_random_engine generator;
-                std::normal_distribution<double> distribution(optimalValue*1.0,100.0);
-                int value = (int)distribution(generator);
-                if(rand()%5 == 0)
-                    value = rand()%255;
-                value = min(value, 255);
-                value = max(value, 0);
-                child->at<Vec3b>(i, j)[k] = value;
-            }
-        }
-    }
-}
 
 double getFitness(Mat* child, Mat* optimal){
     double res = 0;
@@ -167,15 +134,63 @@ double getFitness(Mat* child, Mat* optimal){
     return 1.0-res/(512*512*3.0);
 }
 
+Mat* mutate(Mat* child, Mat* optimal){
+    /*
+     * this function is given an unborn child we will
+     * mutate a random circle of its chromosome space
+     * Using normal distribution (Please refer to my
+     * documentation to understand how it works thoroughly
+     */
+    std::default_random_engine gen;
+    std::normal_distribution<double> distribution(37.0,160.0);
+    Circle randomCircle;
+    randomCircle.x = rand()%512;
+    randomCircle.y = rand()%512;
+    randomCircle.r = (int)distribution(gen);
+    randomCircle.r = max(randomCircle.r,5);
+    randomCircle.r = min(randomCircle.r,256);
+    Mat* clon = new Mat;
+    *clon = child->clone();
+    for(int i=0;i<512;i++){
+        if(abs(i - randomCircle.x)>randomCircle.r)continue;
+        for(int j=0;j<512;j++){
+            if(!insideCircle(randomCircle, Point(i,j)))continue;
+            for(int k=0;k<3;k++) {
+                int optimalValue = optimal->at<Vec3b>(i, j)[k];
+                std::default_random_engine generator;
+                std::normal_distribution<double> distribution(optimalValue*1.0,33.0);
+                int value = (int)distribution(generator);
+
+                value = min(value, 255);
+                value = max(value, 0);
+                child->at<Vec3b>(i, j)[k] = value;
+            }
+        }
+    }
+    if(getFitness(clon, optimal) > getFitness(child, optimal)){
+        child->release();
+        delete child;
+        child = clon;
+    }
+    else {
+        clon->release();
+        delete clon;
+    }
+    return child;
+}
+
 
 void breed(Mat& result, vector<Mat>& population, int genNumber){
     vector<Mat> newPopulation;
-    priority_queue<pair<int,Mat*>> pq;
+    priority_queue<pair<double,Mat*>> pq;
     for(int i=0;i<POPULATION_SIZE;i++){
-        for(int j=i+1;j<POPULATION_SIZE;j++){
+
+        for(int j=i;j<POPULATION_SIZE;j++){
             Mat* child = crossOver(population[i], population[j]);
+
             if(rand()%2==0)     /// Certain parts of the new population will mutate 10% to make the algorithm work faster however it could be set to any value
-                 mutate(child, &result);
+                 child = mutate(child, &result);
+
             pq.push(make_pair(getFitness(child, &result), child));
         }
     }
@@ -201,6 +216,7 @@ void breed(Mat& result, vector<Mat>& population, int genNumber){
     cout<<"Generation number #"<<genNumber<<endl;
      namedWindow(generation, WINDOW_GUI_EXPANDED);
     imshow(generation, population[0]);
+    imwrite("../Media/cached.jpg",population[0]);
     waitKeyEx(50);
 }
 vector<double> vfitness;
@@ -220,6 +236,7 @@ int main( int argc, const char** argv ) {
 
 
     Mat image = imread(argv[1]);
+
     MAX_GENERATIONS = atoi(argv[2]);
     Mat original = image.clone();
     Circle fractalFace;

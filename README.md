@@ -96,6 +96,7 @@ transformation but the algorithm is working with any parameters just with differ
 * Mutate some of the children
 * Replace the population with the new population
 * Omit out those who are further from the optimal image
+* You can stop the program at any moment and the result will saved in "../Media/cached.jpg"
 
 
 #Screenshots during algorithm work
