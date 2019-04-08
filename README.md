@@ -128,3 +128,4 @@ While optimal is
 * Using data structures so that we dont calculate fitness function for each individual but 
 maybe rely on fitness of its parents and mutation change.
 * Feel free to contact me via email [jafer.ba@Gmail.com](jafer.ba@Gmail.com)
+* Check what happens during run in realtime [SimulationOnYoutube](https://www.youtube.com/watch?v=YNIUMS7Hqkk)
