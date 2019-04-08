@@ -119,7 +119,7 @@ transformation but the algorithm is working with any parameters just with differ
 
 While optimal is 
 
-* ![](Media/fractal.jpg)
+* ![](Media/fractal2.jpg)
 
 * Just give it time you will have artistic work (like picaso taking days to finish a painting)
 
